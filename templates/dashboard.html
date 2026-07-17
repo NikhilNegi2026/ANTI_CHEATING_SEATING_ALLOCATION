@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="cards">
+
+    <div class="card green">
+        <div class="card-header">
+            <i class="fa-solid fa-users"></i>
+            <span>Total Students</span>
+        </div>
+        <h2>{{ student_count or 0 }}</h2>
+    </div>
+
+    <div class="card blue">
+        <div class="card-header">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Total Teachers</span>
+        </div>
+        <h2>{{ teacher_count or 0 }}</h2>
+    </div>
+
+    <div class="card orange">
+        <div class="card-header">
+            <i class="fa-solid fa-school"></i>
+            <span>Total Halls</span>
+        </div>
+        <h2>{{ hall_count or 0 }}</h2>
+    </div>
+
+    <div class="card red">
+        <div class="card-header">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Upcoming Exams</span>
+        </div>
+        <h2>{{ exams|length if exams else 0 }}</h2>
+    </div>
+
+</div>
+
+<div class="panel" style="margin-bottom: 25px; border-left: 5px solid #3498db;">
+    <h3><i class="fa-solid fa-calendar-plus"></i> Schedule New Exam Session</h3>
+    <form action="/schedule_exam" method="POST" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+        
+        <input type="date" name="exam_date" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        
+        <select name="exam_time" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            <option value="">Select Shift</option>
+            <option value="Morning (10:00 AM - 1:00 PM)">Morning (10:00 AM - 1:00 PM)</option>
+            <option value="Evening (2:00 PM - 5:00 PM)">Evening (2:00 PM - 5:00 PM)</option>
+        </select>
+
+        <select name="course_code" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            <option value="">Select Target Course</option>
+            {% for c in available_courses %}
+                <option value="{{ c.course_code }}">{{ c.course_name }} ({{ c.course_code }})</option>
+            {% endfor %}
+        </select>
+
+        <input type="text" name="subject_name" placeholder="Subject Name (e.g., DBMS)" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 1;">
+
+        <button type="submit" class="btn blue" style="margin: 0;">Schedule Exam</button>
+    </form>
+</div>
+<div class="dashboard-grid">
+
+    <div class="panel">
+
+        <h3>Recent Seat Allocation</h3>
+
+        <table>
+            <tr>
+                <th>Hall</th>
+                <th>Seat No.</th>
+                <th>Student</th>
+            </tr>
+
+            {% if seating %}
+                {% for s in seating %}
+                <tr>
+                    <td>{{ s.hall }}</td>
+                    <td>{{ s.seat }}</td>
+                    <td>{{ s.student }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3">No seating data available</td>
+                </tr>
+            {% endif %}
+        </table>
+
+    </div>
+
+
+    <div class="panel">
+
+        <h3>Upcoming Exams</h3>
+
+        {% if next_date %}
+        <h4>Next Exam Date: {{ next_date }}</h4>
+        {% endif %}
+
+        <ul>
+            {% if exams %}
+                {% for exam in exams %}
+                <li>
+                    {{ exam.subject }} ({{ exam.course }}) - {{ exam.time }}
+                </li>
+                {% endfor %}
+            {% else %}
+                <li>No exams scheduled</li>
+            {% endif %}
+        </ul>
+
+    </div>
+
+</div>
+
+
+<div class="bottom-actions">
+
+    <a href="/print_admit_cards" class="btn blue" style="display:inline-flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-id-card"></i>
+        <span>Print Admit Cards</span>
+    </a>
+
+    <button onclick="location.href='/virtual_view'"
+        style="padding:12px; background:#e67e22; color:white; border:none; margin-top:20px;">
+        Virtual Seating View
+    </button>
+
+</div>
+
+{% endblock %}

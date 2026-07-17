@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="page-card">
+
+    <h2 class="page-title">Global Seating Allocation</h2>
+
+    <div class="action-bar" style="background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+        <form action="/allocate" method="POST" style="display: flex; align-items: flex-end; gap: 20px;">
+            
+            <div style="flex: 1;">
+                <label style="display: block; font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 8px; text-transform: uppercase;">
+                    Select Exam Date:
+                </label>
+                <input type="date" name="exam_date" required 
+                       style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit;">
+            </div>
+
+            <button type="submit" class="btn-primary" style="padding: 12px 24px; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; height: 45px;">
+                <i class="fa fa-bolt"></i> Run Global Allocation
+            </button>
+        </form>
+        <p style="margin-top: 10px; font-size: 11px; color: #64748b;">
+            *This will combine all students from different branches (MCA, CSE, etc.) having exams on this date into one anti-cheating layout.
+        </p>
+    </div>
+
+    <div class="table-container">
+        <h3 style="font-size: 18px; margin-bottom: 15px; color: #1e293b;">Current Hall Status</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Hall</th>
+                    <th>Seat</th>
+                    <th>Student Name</th>
+                    <th>Roll No</th>
+                    <th>Branch</th>
+                    <th>Subject</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if seating %}
+                    {% for s in seating %}
+                    <tr>
+                        <td style="font-weight: bold; color: #334155;">{{ s.hall }}</td>
+                        <td><span style="background: #f1f5f9; padding: 3px 8px; border-radius: 4px;">{{ s.seat }}</span></td>
+                        <td>{{ s.student }}</td>
+                        <td style="font-family: monospace; font-weight: 600;">{{ s.roll }}</td>
+                        <td><span class="badge">{{ s.branch }}</span></td>
+                        <td>
+                            <small style="color: #64748b;">{{ s.display_subject }}</small>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #94a3b8; padding: 60px;">
+                            <i class="fa fa-calendar-xmark" style="font-size: 30px; display: block; margin-bottom: 10px;"></i>
+                            No seating data found. Select a date above to generate a global plan.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<style>
+    .badge {
+        background: #dcfce7;
+        color: #166534;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th {
+        background: #1e293b;
+        color: white;
+        padding: 12px;
+        text-align: center;
+        font-size: 13px;
+    }
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: center;
+        font-size: 14px;
+    }
+    tr:hover {
+        background: #f8fafc;
+    }
+</style>
+
+{% endblock %}

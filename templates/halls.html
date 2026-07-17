@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="page-card">
+
+<h2 class="page-title">Exam Halls</h2>
+
+<form method="POST" class="form-row">
+
+<input type="text" name="hall" placeholder="Hall Name" required>
+
+<input type="number" name="capacity" placeholder="Capacity" required>
+
+<button type="submit" class="btn blue">Add Hall</button>
+
+</form>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+<tr>
+<th>Hall</th>
+<th>Capacity</th>
+<th>Actions</th> <!-- ✅ ADDED -->
+</tr>
+</thead>
+
+<tbody>
+
+{% for h in halls %}
+
+<tr>
+<td>{{ h.hall }}</td>
+<td>{{ h.capacity }}</td>
+
+<td> <!-- ✅ ADDED -->
+<a href="/edit_hall/{{ h.id }}" class="btn blue" style="padding:5px 10px; font-size:12px;">Edit</a>
+
+<a href="/delete_hall/{{ h.id }}" 
+class="btn red" 
+style="padding:5px 10px; font-size:12px;"
+onclick="return confirm('Delete this hall?')">
+Delete
+</a>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ERP Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body.login-body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f4f6f9;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .login-container {
+            width: 350px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        /* Applied your styling to BOTH input and select */
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px 12px 12px 35px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            transition: 0.2s;
+            box-sizing: border-box;
+            font-size: 14px;
+            background: white;
+            color: #333;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Fixed select dropdown arrow overlapping icon */
+        .input-group select {
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #777;
+            margin-top: 15px;
+            line-height: 1.5;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px dashed #ccc;
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            background: #fadbd8;
+            padding: 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="login-body">
+
+    <div class="login-container">
+        <h2><i class="fa fa-user-lock"></i> Login</h2>
+
+        <form method="POST" action="/">
+
+            <div class="input-group">
+                <i class="fa fa-users-cog"></i>
+                <select name="role" required>
+                    <option value="" disabled selected>Select Login Role</option>
+                    <option value="admin">Administrator</option>
+                    <option value="student">Student</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <i class="fa fa-id-card"></i>
+                <input type="text" name="username" placeholder="Roll Number / Admin Username" autocomplete="off"
+                    required>
+            </div>
+
+            <div class="input-group">
+                <i class="fa fa-lock"></i>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit">Secure Login</button>
+
+        </form>
+
+        <div class="hint">
+            <strong>Authorized Personnel Only</strong><br>
+            Students: Login using your assigned Roll Number and default system password. Contact administration for
+            access issues.
+        </div>
+
+        {% if error %}
+        <div class="error"><i class="fa fa-circle-exclamation"></i> {{ error }}</div>
+        {% endif %}
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="error"><i class="fa fa-circle-exclamation"></i> {{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+    </div>
+
+</body>
+
+</html>

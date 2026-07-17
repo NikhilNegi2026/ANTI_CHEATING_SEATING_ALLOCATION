@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>Teachers</h1>
+
+<form method="POST">
+
+<input name="name" placeholder="Teacher Name" required>
+<input name="subject" placeholder="Subject" required>
+
+<button>Add</button>
+
+</form>
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Subject</th>
+<th>Actions</th> <!-- ✅ ADDED -->
+</tr>
+
+{% for t in teachers %}
+
+<tr>
+<td>{{ t.name }}</td>
+<td>{{ t.subject }}</td>
+
+<td> <!-- ✅ ADDED -->
+<a href="/edit_teacher/{{ t.id }}" 
+style="padding:5px 10px; background:#4285f4; color:white; text-decoration:none; border-radius:4px;">
+Edit
+</a>
+
+<a href="/delete_teacher/{{ t.id }}" 
+style="padding:5px 10px; background:#e74c3c; color:white; text-decoration:none; border-radius:4px;"
+onclick="return confirm('Delete this teacher?')">
+Delete
+</a>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

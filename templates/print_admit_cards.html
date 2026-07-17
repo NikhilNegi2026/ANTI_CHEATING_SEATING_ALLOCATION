@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Exam Admit Cards</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+}
+
+.title{
+text-align:center;
+margin-top:20px;
+}
+
+.print-btn{
+text-align:center;
+margin:20px;
+}
+
+.card{
+width:650px;
+margin:30px auto;
+border:3px solid black;
+padding:20px;
+background:white;
+}
+
+.header{
+text-align:center;
+margin-bottom:20px;
+border-bottom:2px solid black;
+padding-bottom:10px;
+}
+
+table{
+width:100%;
+font-size:16px;
+border-collapse:collapse;
+}
+
+td{
+padding:8px;
+}
+
+/* 🔥 NEW: Styles for the multi-subject schedule table 🔥 */
+.schedule-table {
+    margin-top: 15px;
+    border: 1px solid black;
+}
+
+.schedule-table th, .schedule-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+.schedule-table th {
+    background-color: #e2e8f0;
+}
+
+.footer{
+margin-top:40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.controller{
+text-align:center;
+position:relative;
+}
+
+.controller img.stamp{
+height:80px;
+position:absolute;
+top:-25px;
+left:50%;
+transform:translateX(-50%) rotate(-10deg);
+opacity:0.7;
+}
+
+.controller img.sign{
+height:45px;
+position:relative;
+}
+
+@media print{
+body{ background:white; }
+.print-btn{ display:none; }
+
+.card{
+page-break-after:always;
+margin:0;
+width:100%;
+border:none;
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 class="title">Exam Admit Cards</h1>
+<div class="print-btn" style="display: flex; justify-content: center; gap: 20px; margin: 20px; align-items: center;">
+    
+    {% if courses %}
+    <form method="GET" action="/print_admit_cards" style="display: inline-block;">
+        <select name="course" onchange="this.form.submit()" style="padding: 8px 15px; font-size: 16px; border-radius: 5px; cursor: pointer;">
+            <option value="">All Courses</option>
+            {% for c in courses %}
+                <option value="{{ c.course_code }}" {% if selected_course == c.course_code %}selected{% endif %}>
+                    {{ c.course_name }} ({{ c.course_code }})
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+    {% endif %}
+
+    <button onclick="window.print()" style="padding: 8px 15px; font-size: 16px; border-radius: 5px; cursor: pointer; background: #3498db; color: white; border: none;">
+        🖨 Print Admit Card
+    </button>
+</div>
+
+{% for s in students %}
+
+<div class="card">
+
+<div class="header">
+<h2>University Examination Admit Card</h2>
+<p><b>Exam System</b></p>
+</div>
+
+<!-- Main Details Table -->
+<table>
+<tr><td width="25%"><b>Name</b></td><td>{{ s.name }}</td></tr>
+<tr><td><b>Roll Number</b></td><td>{{ s.roll }}</td></tr>
+<tr><td><b>Branch</b></td><td>{{ s.branch }}</td></tr>
+<tr><td><b>Section</b></td><td>{{ s.section }}</td></tr>
+</table>
+
+<!-- Multi-Subject Exam Schedule Table -->
+<table class="schedule-table">
+    <tr>
+        <th>Date</th>
+        <th>Subject</th>
+        <th>Exam Hall</th>
+        
+        <!-- 🔥 FIX: Only Admin sees the Seat No. column header 🔥 -->
+        {% if session.get('role') == 'admin' %}
+        <th>Seat No.</th>
+        {% endif %}
+    </tr>
+    {% for exam in s.exams %}
+    <tr>
+        <td>{{ exam.date }}</td>
+        <td>{{ exam.subject }}</td>
+        <td>{{ exam.hall }}</td>
+        
+        <!-- 🔥 FIX: Only Admin sees the actual Seat No. 🔥 -->
+        {% if session.get('role') == 'admin' %}
+        <td>{{ exam.seat }}</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="footer">
+
+<span>Student Signature: ________________</span>
+
+<div class="controller">
+    <img src="{{ url_for('static', filename='images/stamp.png') }}" class="stamp">
+    <img src="{{ url_for('static', filename='images/controller_sign.png') }}" class="sign">
+    <div>Controller of Examination</div>
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>

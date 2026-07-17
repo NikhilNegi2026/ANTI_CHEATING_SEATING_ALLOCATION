@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Panel</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+/* PAGE BACKGROUND */
+body{
+font-family:Segoe UI, Arial;
+background:linear-gradient(135deg,#eef2ff,#f8fafc);
+margin:0;
+}
+
+/* SAFE CONTAINER (NO ADMIN CONFLICT) */
+.student-container{
+max-width:1100px;
+margin:30px auto;
+}
+
+/* HEADER */
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.title{
+font-size:26px;
+font-weight:600;
+color:#1e293b;
+}
+
+/* BUTTONS */
+.btn{
+padding:10px 16px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+color:white;
+margin:5px;
+font-size:14px;
+transition:0.2s;
+text-decoration:none;
+}
+
+.green{ background:#22c55e; }
+.blue{ background:#3b82f6; }
+.red{ background:#ef4444; }
+
+.btn:hover{
+transform:translateY(-1px);
+opacity:0.9;
+}
+
+/* CARD */
+.card{
+background:white;
+padding:20px;
+border-radius:14px;
+box-shadow:0 6px 16px rgba(0,0,0,0.08);
+margin-bottom:20px;
+transition:0.2s;
+}
+
+.card:hover{
+transform:translateY(-2px);
+}
+
+/* INFO GRID */
+.info-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+}
+
+.info-box{
+background:#f1f5f9;
+padding:12px;
+border-radius:10px;
+text-align:center;
+font-size:14px;
+}
+
+/* TEXT FIX (IMPORTANT) */
+.val{
+color:#111;
+font-weight:600;
+}
+
+/* SECTION TITLE */
+h3{
+margin-bottom:15px;
+color:#1e293b;
+}
+
+/* SEATING GRID */
+.row{
+display:flex;
+justify-content:center;
+gap:25px;
+margin-bottom:20px;
+}
+
+.block{
+display:flex;
+gap:12px;
+}
+
+.gap{
+width:80px;
+}
+
+/* DESK */
+.desk{
+width:95px;
+padding:12px;
+border-radius:10px;
+text-align:center;
+background:white;
+border:1px solid #e2e8f0;
+box-shadow:0 3px 8px rgba(0,0,0,0.05);
+transition:0.2s;
+border-top: 4px solid #cbd5e1; /* Default gray top border */
+}
+
+.desk:hover{
+transform:scale(1.05);
+}
+
+/* BRANCH COLOR TAGS - THE VISUAL FIX */
+.MCA { border-top: 4px solid #3b82f6 !important; background: #eff6ff !important; }        /* Blue for MCA */
+.BTECH-CSE { border-top: 4px solid #22c55e !important; background: #f0fdf4 !important; }  /* Green for BTech */
+.BAJMC { border-top: 4px solid #f59e0b !important; background: #fffbeb !important; }      /* Orange for BAJMC */
+.BTECH-IT { border-top: 4px solid #8b5cf6 !important; background: #f5f3ff !important; }   /* Purple for IT */
+
+/* ACTIVE SEAT */
+.my-seat{
+background: #16a34a !important; /* Solid Green so the student can find their seat instantly */
+border: 2px solid #14532d !important;
+}
+
+/* Force text inside the active seat to be white so it is readable */
+.my-seat .roll, .my-seat .name, .my-seat .subject {
+color: white !important;
+}
+
+/* TEXT */
+.roll{
+font-weight:bold;
+font-size:14px;
+color:#111;
+}
+
+.name{
+font-size:12px;
+color:#334155;
+}
+
+.subject{
+font-size:11px;
+font-weight: bold;
+color:#64748b;
+}
+
+</style>
+</head>
+
+<body class="student-page">
+
+<div class="student-container">
+
+<div class="header">
+<div class="title">🎓 Student Dashboard</div>
+
+<div>
+<a class="btn green" href="/student_admit_card">🖨 Admit Card</a>
+<a class="btn blue" href="/schedule">📅 Schedule</a>
+<a class="btn red" href="/logout">Logout</a>
+</div>
+</div>
+
+{% if result %}
+<div class="card">
+
+<h3>Your Exam Details</h3>
+
+<div class="info-grid">
+<div class="info-box"><b>Name</b><br><span class="val">{{ result.name }}</span></div>
+<div class="info-box"><b>Roll</b><br><span class="val">{{ result.roll }}</span></div>
+<div class="info-box"><b>Branch</b><br><span class="val">{{ result.branch }}</span></div>
+
+<div class="info-box">
+    <b>Next Exam</b><br>
+    {% if upcoming_exam %}
+        <span class="val" style="color: #16a34a;">{{ upcoming_exam.subject_name }}</span><br>
+        <span style="font-size: 11px; color: #475569;">{{ upcoming_exam.exam_date }}</span>
+    {% else %}
+        <span class="val">{{ result.subject }}</span>
+    {% endif %}
+</div>
+
+<div class="info-box"><b>Section</b><br><span class="val">{{ result.section }}</span></div>
+
+<div class="info-box"><b>Hall</b><br>
+    {% if show_seating %}
+        <span class="val">{{ result.hall }}</span>
+    {% else %}
+        <span class="val" style="color: #ef4444;">🔒 Hidden</span>
+    {% endif %}
+</div>
+
+<div class="info-box"><b>Seat No</b><br>
+    {% if show_seating %}
+        <span class="val">{{ result.seat }}</span>
+    {% else %}
+        <span style="font-size: 11px; color: #64748b;">Reveals 1 day before</span>
+    {% endif %}
+</div>
+
+<div class="info-box"><b>Row</b><br><span class="val">{{ result.row }}</span></div>
+<div class="info-box"><b>Column</b><br><span class="val">{{ result.column }}</span></div>
+</div>
+
+</div>
+{% endif %}
+
+{% if seating %}
+<div class="card">
+
+<h3 style="text-align:center;">Hall Layout</h3>
+
+{% set per_row = 6 %}
+
+{% for i in range(0, seating|length, per_row) %}
+
+<div class="row">
+
+<div class="block">
+{% for j in range(0,3) %}
+{% if (i+j) < seating|length %}
+{% set s = seating[i+j] %}
+<div class="desk {{ s.branch }} {% if s.roll == result.roll %}my-seat{% endif %}">
+<div class="roll">{{ s.roll }}</div>
+<div class="name">{{ s.name }}</div>
+<div class="subject">{{ s.branch }}</div>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+
+<div class="gap"></div>
+
+<div class="block">
+{% for j in range(3,6) %}
+{% if (i+j) < seating|length %}
+{% set s = seating[i+j] %}
+<div class="desk {{ s.branch }} {% if s.roll == result.roll %}my-seat{% endif %}">
+<div class="roll">{{ s.roll }}</div>
+<div class="name">{{ s.name }}</div>
+<div class="subject">{{ s.branch }}</div>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+{% endif %}
+
+</div>
+
+</body>
+</html>

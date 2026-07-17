@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Exam Management System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="header">
+
+        <div class="logo">
+            Exam Management System
+        </div>
+
+        <div class="user">
+            Welcome, Admin
+            <a href="/logout" class="logout-btn"
+                style="margin-left: 15px; padding: 6px 12px; background: #e74c3c; color: white; border-radius: 4px; text-decoration: none;">Logout</a>
+        </div>
+
+    </div>
+
+
+    <div class="container">
+
+        <div class="sidebar">
+
+            <a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a>
+
+            <a href="/students"><i class="fa fa-user"></i> Students</a>
+
+            <a href="/teachers"><i class="fa fa-chalkboard-teacher"></i> Teachers</a>
+
+            <a href="/manage_courses"><i class="fa fa-book"></i> Manage Courses</a>
+
+            <a href="/halls"><i class="fa fa-building"></i> Exam Halls</a>
+
+            <a href="/seating"><i class="fa fa-chair"></i> Seat Allocation</a>
+
+            <a href="/invigilation"><i class="fa-solid fa-clipboard-user"></i> Invigilators</a>
+
+            <a href="/schedule"><i class="fa-solid fa-calendar-days"></i> View Schedule</a>
+
+        </div>
+
+
+        <div class="content">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

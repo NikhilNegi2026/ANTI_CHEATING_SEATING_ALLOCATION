@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invigilator Duties | Admin ERP</title>
+    <!-- Adding Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        :root { --bg:#f1f5f9; --slate:#334155; --border:#e2e8f0; --green:#10b981; --blue:#3b82f6; }
+        body { background:var(--bg); font-family:'Segoe UI',sans-serif; margin:0; padding:20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        
+        .header { 
+            text-align: center; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            margin-bottom: 25px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .grid-layout { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 25px; }
+        .card { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        th { background: #f8fafc; color: var(--slate); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        
+        .tag { background: #ecfdf5; color: #047857; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; border: 1px solid #a7f3d0; }
+        .tag-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+        .btn { 
+            text-decoration: none; 
+            padding: 10px 18px; 
+            border-radius: 6px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            border: none; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-green { background: var(--green); color: white; }
+        .btn-slate { background: var(--slate); color: white; }
+        .btn-outline { border: 1px solid var(--border); background: white; color: var(--slate); }
+
+        @media print {
+            .header, .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .grid-layout { display: block; }
+            .card { border: none; padding: 0; }
+            .container { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2 style="margin-top:0;"><i class="fa fa-user-shield" style="color:var(--blue)"></i> Invigilator & Workload Management</h2>
+        
+        <form method="GET" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            <label style="font-size: 13px; font-weight: 600; color: var(--slate);">Target Exam Date:</label>
+            <select name="exam_date" onchange="this.form.submit()" style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border); background: #f8fafc; font-weight: 600;">
+                <option value="">-- Choose Date --</option>
+                {% for d in available_dates %}
+                <option value="{{ d }}" {% if selected_date == d %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 12px;" class="no-print">
+            <a href="/assign_invigilators?exam_date={{ selected_date }}" class="btn btn-green">
+                <i class="fa fa-magic"></i> Auto-Assign Teachers
+            </a>
+            <button onclick="window.print()" class="btn btn-outline">
+                <i class="fa fa-print"></i> Print Duty List
+            </button>
+            <a href="/dashboard" class="btn btn-slate">
+                <i class="fa fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="grid-layout">
+        <!-- Left Column: Hall Assignments -->
+        <div class="card">
+            <h3 style="margin-top: 0; font-size: 16px;"><i class="fa fa-chalkboard-teacher"></i> Duty Chart: {{ selected_date if selected_date else 'Not Selected' }}</h3>
+            {% if assignments %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hall ID</th>
+                        <th>Invigilator 1</th>
+                        <th>Invigilator 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in assignments %}
+                    <tr>
+                        <td><strong style="color:var(--blue)">Hall {{ a.hall_id }}</strong></td>
+                        <td>{{ a.teacher1 }}</td>
+                        <td>{{ a.teacher2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                <i class="fa fa-calendar-times fa-3x" style="margin-bottom: 10px;"></i>
+                <p>No teachers assigned for this date yet.<br>Select a date and click 'Auto-Assign'.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Backups & Workload -->
+        <div class="no-print">
+            <div class="card" style="margin-bottom: 25px; border-left: 4px solid var(--blue);">
+                <h3 style="margin-top: 0; font-size: 15px;"><i class="fa fa-life-ring"></i> Standby / Backups</h3>
+                <p style="font-size: 11px; color: #64748b; margin-bottom: 15px;">Available teachers with lowest workload.</p>
+                
+                {% if backups %}
+                <ul style="padding: 0; list-style: none; margin: 0; font-size: 14px;">
+                    {% for b in backups %}
+                    <li style="padding: 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between;">
+                        <span>{{ b.name }}</span>
+                        <span class="tag tag-blue">{{ b.duties_assigned }} Duties</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p style="font-size: 12px; color: #94a3b8;">No backups found.</p>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top: 0; font-size: 15px;"><i class="fa fa-chart-bar"></i> Overall Workload</h3>
+                <table>
+                    <thead>
+                        <tr><th>Teacher</th><th>Total Duties</th></tr>
+                    </thead>
+                    <tbody>
+                        {% if workloads %}
+                            {% for w in workloads %}
+                            <tr>
+                                <td style="font-size: 13px;">{{ w.name }}</td>
+                                <td><span class="tag">{{ w.duties_assigned }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="2" style="text-align: center; color: #94a3b8;">No data available</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

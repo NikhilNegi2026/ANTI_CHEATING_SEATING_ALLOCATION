@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    .page-card { padding: 30px; background: white; border-radius: 12px; border: 1px solid #e2e8f0; }
+    .form-row { display: flex; gap: 15px; margin-bottom: 30px; }
+    .form-row input { flex: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 14px; }
+    
+    .table-container { margin-top: 20px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    th { background: #f8fafc; padding: 15px; color: #475569; font-weight: 700; border-bottom: 2px solid #e2e8f0; text-transform: uppercase; font-size: 12px; }
+    td { padding: 15px; border-bottom: 1px solid #f1f5f9; color: #1e293b; }
+    
+    .count-badge { background: #f1f5f9; color: #475569; padding: 4px 12px; border-radius: 20px; font-weight: 700; border: 1px solid #e2e8f0; font-size: 12px; }
+
+    .btn { padding: 10px 20px; border-radius: 6px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; font-size: 13px; }
+    .btn.blue { background: #334155; color: white; }
+    .btn.red { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
+</style>
+
+<div class="page-card">
+    <h2 style="margin-top: 0; color: #1e293b; letter-spacing: -0.5px;">Course Registry Management</h2>
+
+    <form method="POST" class="form-row">
+        <input type="text" name="course_code" placeholder="Code (e.g. MCA)" required>
+        <input type="text" name="course_name" placeholder="Full Name (e.g. Master of Computer Applications)" required>
+        <button type="submit" class="btn blue">Add Course</button>
+    </form>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Course Code</th>
+                    <th>Full Name</th>
+                    <th style="text-align: center;">Total Students</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in courses %}
+                <tr>
+                    <td><strong style="color: #0f172a;">{{ c.course_code }}</strong></td>
+                    <td style="color: #475569;">{{ c.course_name }}</td>
+                    <td style="text-align: center;">
+                        <span class="count-badge">{{ c.student_count }}</span>
+                    </td>
+                    <td style="text-align: right;">
+                        <a href="/delete_course/{{ c.course_code }}" class="btn red" 
+                           onclick="return confirm('Confirm deletion of {{ c.course_code }}?')">Delete</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 40px; color: #94a3b8;">No courses found. Use the form above to add one.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
