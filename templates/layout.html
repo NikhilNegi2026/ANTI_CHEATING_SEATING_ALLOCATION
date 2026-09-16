@@ -53,6 +53,16 @@
 
         <div class="content">
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="error" style="background: {% if category == 'success' %}#d4edda{% else %}#fadbd8{% endif %}; color: {% if category == 'success' %}#155724{% else %}#e74c3c{% endif %}; margin-bottom: 15px; font-weight: bold; padding: 10px; border-radius: 4px; border: 1px solid {% if category == 'success' %}#c3e6cb{% else %}#f5c6cb{% endif %};">
+                            <i class="fa {% if category == 'success' %}fa-check-circle{% else %}fa-circle-exclamation{% endif %}"></i> {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             {% block content %}
 
             {% endblock %}

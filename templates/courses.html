@@ -22,6 +22,7 @@
     <h2 style="margin-top: 0; color: #1e293b; letter-spacing: -0.5px;">Course Registry Management</h2>
 
     <form method="POST" class="form-row">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="text" name="course_code" placeholder="Code (e.g. MCA)" required>
         <input type="text" name="course_name" placeholder="Full Name (e.g. Master of Computer Applications)" required>
         <button type="submit" class="btn blue">Add Course</button>

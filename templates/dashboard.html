@@ -41,6 +41,7 @@
 <div class="panel" style="margin-bottom: 25px; border-left: 5px solid #3498db;">
     <h3><i class="fa-solid fa-calendar-plus"></i> Schedule New Exam Session</h3>
     <form action="/schedule_exam" method="POST" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         
         <input type="date" name="exam_date" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
         

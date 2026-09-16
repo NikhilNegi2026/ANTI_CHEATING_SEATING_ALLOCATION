@@ -9,12 +9,21 @@
         <strong>💡 Pro-Tip for Admins:</strong> You do not need to upload separate files for each course. You can upload a single, combined CSV file containing students from multiple courses. The system will automatically read the "Branch" column and separate them internally.
     </div>
 
-    <form action="/upload_students" method="POST" enctype="multipart/form-data" style="display: flex; gap: 15px; align-items: center;">
-        <input type="file" name="file" accept=".csv" required style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: white;">
-        <button type="submit" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-            <i class="fa-solid fa-upload"></i> Upload CSV
-        </button>
-    </form>
+    <div style="display: flex; gap: 20px; align-items: center; justify-content: space-between;">
+        <form action="/upload_students" method="POST" enctype="multipart/form-data" style="display: flex; gap: 15px; align-items: center;">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="file" name="file" accept=".csv" required style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: white;">
+            <button type="submit" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                <i class="fa-solid fa-upload"></i> Upload CSV
+            </button>
+        </form>
+        <form action="/delete_all_students" method="POST" onsubmit="return confirm('Are you sure you want to delete ALL students and ALL seating arrangements? This cannot be undone.');">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" style="padding: 10px 20px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                <i class="fa-solid fa-trash"></i> Delete All Students
+            </button>
+        </form>
+    </div>
 </div>
 
 <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
@@ -22,10 +31,11 @@
 <h2>Add Student Manually</h2>
 
 <form method="POST" class="form-row" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <input type="text" name="name" placeholder="Student Name" required style="flex: 1; min-width: 150px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
     <input type="text" name="roll" placeholder="Roll Number" required style="flex: 1; min-width: 120px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
     <input type="text" name="branch" placeholder="Branch (e.g. MCA)" required style="flex: 1; min-width: 120px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
-    <input type="text" name="subject" placeholder="Subject Code" required style="flex: 1; min-width: 120px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+    <input type="text" name="subject" placeholder="Semester (e.g. SEM-1)" required style="flex: 1; min-width: 120px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
     <input type="text" name="section" placeholder="Section (A/B/C)" required style="flex: 1; min-width: 100px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
     <button type="submit" style="padding: 10px 20px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
         <i class="fa-solid fa-plus"></i> Add Student
@@ -43,8 +53,9 @@
                 <th style="padding: 12px 15px; text-align: left;">Name</th>
                 <th style="padding: 12px 15px; text-align: left;">Roll</th>
                 <th style="padding: 12px 15px; text-align: left;">Branch</th>
-                <th style="padding: 12px 15px; text-align: left;">Subject</th>
+                <th style="padding: 12px 15px; text-align: left;">Semester</th>
                 <th style="padding: 12px 15px; text-align: left;">Section</th>
+                <th style="padding: 12px 15px; text-align: center;">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -55,10 +66,18 @@
                 <td style="padding: 12px 15px;">{{ s.branch }}</td>
                 <td style="padding: 12px 15px;">{{ s.subject }}</td>
                 <td style="padding: 12px 15px;">{{ s.section }}</td>
+                <td style="padding: 12px 15px; text-align: center;">
+                    <form action="/delete_student/{{ s.roll }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete {{ s.name }}?');">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" style="padding: 6px 12px; background-color: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="5" style="padding: 20px; text-align: center; color: #777;">No students found. Upload a CSV or add them manually above.</td>
+                <td colspan="6" style="padding: 20px; text-align: center; color: #777;">No students found. Upload a CSV or add them manually above.</td>
             </tr>
             {% endfor %}
         </tbody>

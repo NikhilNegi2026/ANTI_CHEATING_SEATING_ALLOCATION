@@ -5,6 +5,7 @@
 <h1>Teachers</h1>
 
 <form method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
 <input name="name" placeholder="Teacher Name" required>
 <input name="subject" placeholder="Subject" required>

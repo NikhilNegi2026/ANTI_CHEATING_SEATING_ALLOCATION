@@ -117,6 +117,7 @@
         <h2><i class="fa fa-user-lock"></i> Login</h2>
 
         <form method="POST" action="/">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
             <div class="input-group">
                 <i class="fa fa-users-cog"></i>
@@ -144,8 +145,7 @@
 
         <div class="hint">
             <strong>Authorized Personnel Only</strong><br>
-            Students: Login using your assigned Roll Number and default system password. Contact administration for
-            access issues.
+            Students: Please log in using your registered Roll Number. Contact the administration desk for any access issues.
         </div>
 
         {% if error %}

@@ -5,6 +5,7 @@
 <h2>Edit Hall</h2>
 
 <form method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
 <input name="hall" value="{{ hall.hall }}" required>
 <input type="number" name="capacity" value="{{ hall.capacity }}" required>

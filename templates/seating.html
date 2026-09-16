@@ -8,6 +8,7 @@
 
     <div class="action-bar" style="background: #f8fafc; padding: 25px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
         <form action="/allocate" method="POST" style="display: flex; align-items: flex-end; gap: 20px;">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             
             <div style="flex: 1;">
                 <label style="display: block; font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 8px; text-transform: uppercase;">

@@ -5,6 +5,7 @@
 <h2>Edit Teacher</h2>
 
 <form method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
 <input name="name" value="{{ teacher.name }}" required>
 <input name="subject" value="{{ teacher.subject }}" required>
