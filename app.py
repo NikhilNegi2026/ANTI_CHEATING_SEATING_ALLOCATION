@@ -8,6 +8,7 @@ from routes.auth import auth_bp
 from routes.admin import admin_bp
 from routes.student import student_bp
 from routes.seating import seating_bp
+from routes.api import api_bp
 
 load_dotenv()
 
@@ -27,6 +28,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(student_bp)
 app.register_blueprint(seating_bp)
+app.register_blueprint(api_bp)
 
 if __name__ == "__main__":
     app.run(debug=True)

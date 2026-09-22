@@ -15,3 +15,27 @@ venv312/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Personal / Interview Prep Files
+QA_Intern_Interview_Handbook.md
+combined_handbook.md
+job_logs.txt
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor & IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and databases (prevents pushing local test logs/DBs)
+*.log
+*.sqlite3
+*.db
+
+# Large generated test data (optional, remove if graders need this specific file)
+final_stress_test_students.csv
